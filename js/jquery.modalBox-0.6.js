@@ -44,7 +44,10 @@ $.fn.modalBox = function(options) {
 	 * @param $div
 	 * @returns {Number}
 	 */
-	var getActualHeight = function($div) {
+	var getActualSize = function($div, type) {
+		if(typeof type === 'undefined' || type == null || type.length <= 0) {
+			type = 'width';
+		}
 		var $el = $($div).clone();
 		$el.css('visibility', 'hidden')
 			.css('position', 'absolute')
@@ -59,9 +62,10 @@ $.fn.modalBox = function(options) {
 		$el.show();
 
 		var height =  parseInt($el.outerHeight());
+		var width =  parseInt($el.outerWidth());
 		$el.remove();
-		return height;
-	}
+		return (type == 'height' ? height : width);
+	};
 
 	// go throw all elements and create modal boxes
 	$(this).each(function() {
@@ -116,7 +120,7 @@ $.fn.modalBox = function(options) {
 		var adjustModalPosition = function($mDiv, scrolled) {
 			var callback = settings.afterOpen;
 			var duration = settings.animationSpeed;
-			var boxHeight = getActualHeight($mDiv);
+			var boxHeight = getActualSize($mDiv, 'height');
 
 			if(settings.animation === 'fade') {
 				duration = 10;
@@ -131,7 +135,7 @@ $.fn.modalBox = function(options) {
 			}
 
 			// calculate left position
-			var leftPosition = (Math.round($(settings.parentSelector).width() - $mDiv.outerWidth()) / 2) + 'px';
+			var leftPosition = (Math.round($(settings.parentSelector).width() - getActualSize($mDiv)) / 2) + 'px';
 
 			// TOP position of modal div
 			var topPosition = settings.topPosition;
